@@ -10,6 +10,7 @@ public interface IEmailService
     /// Sends an email to a single recipient.
     /// </summary>
     Task SendEmailAsync(string toEmail, string subject, string body, bool isHtml = true, CancellationToken cancellationToken = default);
+    Task SendEmailAsync(string fromEmail, string toEmail, string subject, string body, bool isHtml = true, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Checks the configured mailbox for new (unseen) messages.

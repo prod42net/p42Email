@@ -26,11 +26,47 @@ public sealed class MailKitEmailService : IEmailService
         _logger = logger;
     }
 
+    
     public async Task SendEmailAsync(string toEmail, string subject, string body, bool isHtml = true, CancellationToken cancellationToken = default)
     {
         var msg = new MimeMessage();
         var fromName = string.IsNullOrWhiteSpace(_options.Smtp.FromDisplayName) ? _options.Smtp.FromAddress : _options.Smtp.FromDisplayName;
         msg.From.Add(new MailboxAddress(fromName, _options.Smtp.FromAddress));
+        msg.To.Add(MailboxAddress.Parse(toEmail));
+        msg.Subject = subject;
+
+        var builder = new BodyBuilder();
+        if (isHtml)
+            builder.HtmlBody = body;
+        else
+            builder.TextBody = body;
+        msg.Body = builder.ToMessageBody();
+
+        using var smtp = new SmtpClient();
+        try
+        {
+            var secure = _options.Smtp.UseSsl ? SecureSocketOptions.StartTlsWhenAvailable : SecureSocketOptions.Auto;
+            await smtp.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, secure, cancellationToken);
+
+            if (!string.IsNullOrWhiteSpace(_options.Smtp.Username))
+            {
+                await smtp.AuthenticateAsync(_options.Smtp.Username, _options.Smtp.Password, cancellationToken);
+            }
+
+            await smtp.SendAsync(msg, cancellationToken);
+        }
+        finally
+        {
+            try { await smtp.DisconnectAsync(true, cancellationToken); } catch { /* ignore */ }
+        }
+    }
+
+    public async Task SendEmailAsync(string fromEmail, string toEmail, string subject, string body, bool isHtml = true,
+        CancellationToken cancellationToken = default)
+    {
+        var msg = new MimeMessage();
+        
+        msg.From.Add(new MailboxAddress(fromEmail, fromEmail));
         msg.To.Add(MailboxAddress.Parse(toEmail));
         msg.Subject = subject;
 
