@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Title>Use Email features in your app </Title>
+        <Description>It will help implementing and using common email functionalities into your app</Description>
+        <Copyright>pro42net</Copyright>
+        <PackageProjectUrl>https://github.com/prod42net/p42Email</PackageProjectUrl>
+        <PackageIcon>prod42net.jpg</PackageIcon>
+        <RepositoryUrl>https://github.com/prod42net/p42Email</RepositoryUrl>
+        <PackageTags>email</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="MailKit" Version="4.14.1" />
+        <PackageReference Include="Microsoft.AspNetCore.App.Internal.Assets" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="" />
+        <None Include="prod42net.jpg" Pack="true" PackagePath="" />
+
+    </ItemGroup>
+</Project>
