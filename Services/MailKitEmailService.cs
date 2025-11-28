@@ -48,6 +48,7 @@ public sealed class MailKitEmailService : IEmailService
         {
             var secure = _options.Smtp.UseSsl ? SecureSocketOptions.StartTlsWhenAvailable : SecureSocketOptions.Auto;
             await smtp.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, secure, cancellationToken);
+            // this option is supposed to work with OAuth2 on EntraID
             if (!string.IsNullOrWhiteSpace(_options.Smtp.ClientId) && !string.IsNullOrWhiteSpace(_options.Smtp.ClientSecret))
             {
                 // OAuth2 Logic

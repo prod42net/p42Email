@@ -60,6 +60,7 @@ Add an `Email` section to your `appsettings.json` (or other configuration source
       "Password": "smtp-password",
       "FromAddress": "no-reply@example.com",
       "FromDisplayName": "Example App"
+      
     },
     "Imap": {
       "Host": "imap.example.com",
@@ -72,6 +73,38 @@ Add an `Email` section to your `appsettings.json` (or other configuration source
   }
 }
 ```
+here are optional settings for Azure AD authentication:
+it goes to the SMTP section:
+```
+{
+  "Email": {
+    "PollingIntervalSeconds": 60,
+    "Smtp": {
+      "Host": "smtp.example.com",
+      "Port": 587,
+      "UseSsl": true,
+      "Username": "smtp-user",
+      "Password": "smtp-password",
+      "FromAddress": "no-reply@example.com",
+      "FromDisplayName": "Example App",
+   
+      "ClientSecret": "your-secret"
+      "ClientId": "client-id",
+      "TenantId": "tentant-id"
+      
+    },
+    "Imap": {
+      "Host": "imap.example.com",
+      "Port": 993,
+      "UseSsl": true,
+      "Username": "imap-user",
+      "Password": "imap-password",
+      "Folder": "INBOX"
+    }
+  }
+}
+```
+
 
 Tip: Store secrets (usernames/passwords) in user secrets or environment variables in production.
 
