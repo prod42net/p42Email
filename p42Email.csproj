@@ -14,8 +14,8 @@
         <PackageTags>email</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <Version>1.0.1</Version>
-        <PackageReleaseNotes>added azure / entraID</PackageReleaseNotes>
+        <Version>1.0.2</Version>
+        <PackageReleaseNotes>multiple receivers</PackageReleaseNotes>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="MailKit" Version="4.14.1" />
