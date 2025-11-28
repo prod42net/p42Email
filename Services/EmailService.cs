@@ -16,12 +16,12 @@ using p42Email.Interfaces;
 
 namespace p42Email.Services;
 
-public sealed class MailKitEmailService : IEmailService
+public sealed class EmailService : IEmailService
 {
     private readonly EmailOptions _options;
-    private readonly ILogger<MailKitEmailService> _logger;
+    private readonly ILogger<EmailService> _logger;
 
-    public MailKitEmailService(IOptions<EmailOptions> options, ILogger<MailKitEmailService> logger)
+    public EmailService(IOptions<EmailOptions> options, ILogger<EmailService> logger)
     {
         _options = options.Value;
         _logger = logger;
@@ -38,6 +38,13 @@ public sealed class MailKitEmailService : IEmailService
         bool isHtml = true,
         CancellationToken cancellationToken = default)
     {
+        return await SendEmailAsync("", [toEmail], subject, body, isHtml, cancellationToken);
+    }
+
+    public async Task<bool> SendEmailAsync(string fromEmail, string[] toEmail, string subject, string body,
+        bool isHtml = true,
+        CancellationToken cancellationToken = default)
+    {
         MimeMessage msg = new MimeMessage();
 
         if (string.IsNullOrWhiteSpace(fromEmail))
@@ -51,10 +58,21 @@ public sealed class MailKitEmailService : IEmailService
         {
             // if no name is really specified, use the email address as the name
             msg.From.Add(new MailboxAddress(fromEmail, fromEmail));
-           // msg.From.Add(MailboxAddress.Parse(fromEmail));
+            // msg.From.Add(MailboxAddress.Parse(fromEmail));
         }
 
-        msg.To.Add(MailboxAddress.Parse(toEmail));
+        if (toEmail.Length == 0)
+        {
+            return false;
+        }
+        else
+        {
+            foreach (string email in toEmail)
+            {
+                msg.To.Add(MailboxAddress.Parse(email));
+            }
+        }
+
         msg.Subject = subject;
 
         BodyBuilder builder = new BodyBuilder();
@@ -71,7 +89,7 @@ public sealed class MailKitEmailService : IEmailService
                 ? SecureSocketOptions.StartTlsWhenAvailable
                 : SecureSocketOptions.Auto;
             await smtp.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, secure, cancellationToken);
-            
+
             // this option is supposed to work with OAuth2 on EntraID
             await AuthenticateAtServer(cancellationToken, smtp);
 
@@ -88,9 +106,10 @@ public sealed class MailKitEmailService : IEmailService
             {
                 await smtp.DisconnectAsync(true, cancellationToken);
             }
-            catch
+            catch(Exception e)
             {
-                /* ignore */
+                _logger.LogError($"Exception while disconnecting:[{e}]");
+                // other than logging, we don't care at this point'
             }
         }
 

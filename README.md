@@ -35,8 +35,7 @@ All configuration is provided through a single `Email` options section (`Smtp`, 
 
 ## Installation
 
-Install from NuGet:
-
+Check for the latest version of the package on NuGet:
 ```
 dotnet add package p42Email --version 1.0.0
 ```
@@ -71,38 +70,6 @@ Add an `Email` section to your `appsettings.json` (or other configuration source
     }
   }
 }
-```
-here are optional settings for Azure AD authentication:
-it goes to the SMTP section:
-```
-{
-  "Email": {
-    "PollingIntervalSeconds": 60,
-    "Smtp": {
-      "Host": "smtp.example.com",
-      "Port": 587,
-      "UseSsl": true,
-      "Username": "smtp-user",
-      "Password": "smtp-password",
-      "FromAddress": "no-reply@example.com",
-      "FromDisplayName": "Example App",
-   
-      "ClientSecret": "your-secret"
-      "ClientId": "client-id",
-      "TenantId": "tentant-id"
-      
-    },
-    "Imap": {
-      "Host": "imap.example.com",
-      "Port": 993,
-      "UseSsl": true,
-      "Username": "imap-user",
-      "Password": "imap-password",
-      "Folder": "INBOX"
-    }
-  }
-}
-```
 
 
 Tip: Store secrets (usernames/passwords) in user secrets or environment variables in production.
@@ -126,7 +93,7 @@ builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailO
 
 // Core email services
 builder.Services.AddSingleton<IEmailEvents, EmailEvents>();
-builder.Services.AddSingleton<IEmailService, MailKitEmailService>();
+builder.Services.AddSingleton<IEmailService, EmailService>();
 
 // Optional: enable background polling for new messages
 builder.Services.AddHostedService<EmailPollingService>();
