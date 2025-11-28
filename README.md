@@ -3,7 +3,6 @@
 Email utilities for .NET apps built on MailKit: send messages via SMTP, check IMAP for new mail, list recent emails, and optionally run a background polling service that raises events when new messages arrive.
 
 - PackageId: `p42Email`
-- Version: `1.0.0`
 - Target framework: .NET 10.0
 - Language: C# 14.0
 - License: MIT
