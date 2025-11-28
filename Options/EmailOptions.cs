@@ -23,6 +23,9 @@ public sealed class SmtpOptions
     public string Password { get; set; } = string.Empty;
     public string FromAddress { get; set; } = string.Empty;
     public string FromDisplayName { get; set; } = string.Empty;
+    public string ClientId { get; set; } = string.Empty;
+    public string ClientSecret { get; set; } = string.Empty;
+    public string TenantId { get; set; } = string.Empty;
 }
 
 public sealed class ImapOptions

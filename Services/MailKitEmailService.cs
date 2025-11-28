@@ -10,6 +10,7 @@ using MailKit.Search;
 using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Client;
 using MimeKit;
 using p42Email.Interfaces;
 
@@ -47,7 +48,25 @@ public sealed class MailKitEmailService : IEmailService
         {
             var secure = _options.Smtp.UseSsl ? SecureSocketOptions.StartTlsWhenAvailable : SecureSocketOptions.Auto;
             await smtp.ConnectAsync(_options.Smtp.Host, _options.Smtp.Port, secure, cancellationToken);
+            if (!string.IsNullOrWhiteSpace(_options.Smtp.ClientId) && !string.IsNullOrWhiteSpace(_options.Smtp.ClientSecret))
+            {
+                // OAuth2 Logic
+                var cca = ConfidentialClientApplicationBuilder
+                    .Create(_options.Smtp.ClientId)
+                    .WithClientSecret(_options.Smtp.ClientSecret)
+                    .WithAuthority(new Uri($"https://login.microsoftonline.com/{_options.Smtp.TenantId}"))
+                    .Build();
 
+                // The scope for SMTP AUTH via OAuth2 is usually "https://outlook.office365.com/.default"
+                var scopes = new[] { "https://outlook.office365.com/.default" };
+
+                var authToken = await cca.AcquireTokenForClient(scopes).ExecuteAsync(cancellationToken);
+                
+                // Authenticate using the OAuth2 token
+                var saslMechanism = new SaslMechanismOAuth2(_options.Smtp.FromAddress, authToken.AccessToken);
+                await smtp.AuthenticateAsync(saslMechanism, cancellationToken);
+            }
+            else 
             if (!string.IsNullOrWhiteSpace(_options.Smtp.Username))
             {
                 await smtp.AuthenticateAsync(_options.Smtp.Username, _options.Smtp.Password, cancellationToken);
